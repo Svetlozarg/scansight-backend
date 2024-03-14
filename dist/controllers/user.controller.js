@@ -12,17 +12,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerUser = void 0;
+exports.deductPoints = exports.addPoints = exports.loginUser = exports.registerUser = exports.getUserPoints = exports.getUsers = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = __importDefault(require("../models/user.model"));
+//@desc Get all users
+//?@route GET /api/users
+//@access private
+exports.getUsers = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield user_model_1.default.find({});
+    if (users) {
+        res.status(200).json({
+            success: true,
+            data: users,
+        });
+    }
+    else {
+        res.status(404);
+        res.send({
+            success: false,
+            message: "Users not found",
+        });
+        throw new Error("Users not found");
+    }
+}));
+//@desc Get user's total points
+//?@route GET /api/user/:id/points
+//@access private
+exports.getUserPoints = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(req.params.id);
+    if (user) {
+        res.status(200).json({
+            success: true,
+            data: {
+                points: user.points,
+            },
+        });
+    }
+    else {
+        res.status(404);
+        res.send({
+            success: false,
+            message: "User not found",
+        });
+        throw new Error("User not found");
+    }
+}));
 //@desc Register a user
-//!@route POST /api/users/register
+//!@route POST /api/register
 //@access public
 exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
+    const { firstname, lastname, email, phone, password } = req.body;
+    if (!firstname || !lastname || !email || !phone || !password) {
         res.status(400);
         res.send({
             success: false,
@@ -41,8 +83,10 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => 
     }
     const hashedPassword = yield bcrypt_1.default.hash(password, 10);
     const user = yield user_model_1.default.create({
-        username,
+        firstname,
+        lastname,
         email,
+        phone,
         password: hashedPassword,
     });
     console.log(`User created ${user}`);
@@ -51,9 +95,10 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => 
             success: true,
             data: {
                 _id: user.id,
-                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
                 email: user.email,
-                role: user.role,
+                phone: user.phone,
             },
         });
     }
@@ -68,7 +113,7 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => 
     res.json({ message: "Register the user" });
 }));
 //@desc Login user
-//!@route POST /api/users/login
+//!@route POST /api/login
 //@access public
 exports.loginUser = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
@@ -115,6 +160,54 @@ exports.loginUser = (0, express_async_handler_1.default)((req, res, next) => __a
             message: "email or password is not valid",
         });
         throw new Error("email or password is not valid");
+    }
+}));
+//@desc Add points to user
+//!@route POST /api/user/:id/points
+//@access private
+exports.addPoints = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(req.params.id);
+    if (user) {
+        user.points += req.body.points;
+        yield user.save();
+        res.status(200).json({
+            success: true,
+            data: {
+                points: user.points,
+            },
+        });
+    }
+    else {
+        res.status(404);
+        res.send({
+            success: false,
+            message: "User not found",
+        });
+        throw new Error("User not found");
+    }
+}));
+//@desc Deduct points from user
+//!@route POST /api/user/:id/points/deduct
+//@access private
+exports.deductPoints = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(req.params.id);
+    if (user) {
+        user.points -= req.body.points;
+        yield user.save();
+        res.status(200).json({
+            success: true,
+            data: {
+                points: user.points,
+            },
+        });
+    }
+    else {
+        res.status(404);
+        res.send({
+            success: false,
+            message: "User not found",
+        });
+        throw new Error("User not found");
     }
 }));
 //# sourceMappingURL=user.controller.js.map

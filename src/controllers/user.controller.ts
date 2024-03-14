@@ -4,14 +4,58 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
 
+//@desc Get all users
+//?@route GET /api/users
+//@access private
+export const getUsers = expressAsyncHandler(async (req, res) => {
+  const users = await User.find({});
+
+  if (users) {
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "Users not found",
+    });
+    throw new Error("Users not found");
+  }
+});
+
+//@desc Get user's total points
+//?@route GET /api/user/:id/points
+//@access private
+export const getUserPoints = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    res.status(200).json({
+      success: true,
+      data: {
+        points: user.points,
+      },
+    });
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "User not found",
+    });
+    throw new Error("User not found");
+  }
+});
+
 //@desc Register a user
-//!@route POST /api/users/register
+//!@route POST /api/register
 //@access public
 export const registerUser = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email, password } = req.body;
+    const { firstname, lastname, email, phone, password } = req.body;
 
-    if (!username || !email || !password) {
+    if (!firstname || !lastname || !email || !phone || !password) {
       res.status(400);
       res.send({
         success: false,
@@ -34,8 +78,10 @@ export const registerUser = expressAsyncHandler(
     const hashedPassword: string = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username,
+      firstname,
+      lastname,
       email,
+      phone,
       password: hashedPassword,
     });
 
@@ -45,9 +91,10 @@ export const registerUser = expressAsyncHandler(
         success: true,
         data: {
           _id: user.id,
-          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
           email: user.email,
-          role: user.role,
+          phone: user.phone,
         },
       });
     } else {
@@ -63,7 +110,7 @@ export const registerUser = expressAsyncHandler(
 );
 
 //@desc Login user
-//!@route POST /api/users/login
+//!@route POST /api/login
 //@access public
 export const loginUser = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -121,3 +168,53 @@ export const loginUser = expressAsyncHandler(
     }
   }
 );
+
+//@desc Add points to user
+//!@route POST /api/user/:id/points
+//@access private
+export const addPoints = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.points += req.body.points;
+    await user.save();
+    res.status(200).json({
+      success: true,
+      data: {
+        points: user.points,
+      },
+    });
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "User not found",
+    });
+    throw new Error("User not found");
+  }
+});
+
+//@desc Deduct points from user
+//!@route POST /api/user/:id/points/deduct
+//@access private
+export const deductPoints = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.points -= req.body.points;
+    await user.save();
+    res.status(200).json({
+      success: true,
+      data: {
+        points: user.points,
+      },
+    });
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "User not found",
+    });
+    throw new Error("User not found");
+  }
+});
