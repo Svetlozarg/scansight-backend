@@ -152,6 +152,7 @@ exports.loginUser = (0, express_async_handler_1.default)((req, res, next) => __a
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
+                accessToken: accessToken,
             },
         });
     }

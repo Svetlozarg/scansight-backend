@@ -158,6 +158,7 @@ export const loginUser = expressAsyncHandler(
           lastname: user.lastname,
           email: user.email,
           phone: user.phone,
+          accessToken: accessToken,
         },
       });
     } else {
