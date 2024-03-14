@@ -137,8 +137,10 @@ exports.loginUser = (0, express_async_handler_1.default)((req, res, next) => __a
         }
         const accessToken = jsonwebtoken_1.default.sign({
             user: {
-                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
                 email: user.email,
+                phone: user.phone,
                 id: user.id,
             },
         }, process.env.ACCESS_TOKEN_SECERT, { expiresIn: "24h" });
@@ -146,10 +148,10 @@ exports.loginUser = (0, express_async_handler_1.default)((req, res, next) => __a
             success: true,
             data: {
                 _id: user.id,
-                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
                 email: user.email,
-                role: user.role,
-                accessToken: accessToken,
+                phone: user.phone,
             },
         });
     }

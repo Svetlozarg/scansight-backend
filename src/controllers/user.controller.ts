@@ -140,8 +140,10 @@ export const loginUser = expressAsyncHandler(
       const accessToken: string = jwt.sign(
         {
           user: {
-            username: user.username,
+            firstname: user.firstname,
+            lastname: user.lastname,
             email: user.email,
+            phone: user.phone,
             id: user.id,
           },
         },
@@ -152,10 +154,10 @@ export const loginUser = expressAsyncHandler(
         success: true,
         data: {
           _id: user.id,
-          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
           email: user.email,
-          role: user.role,
-          accessToken: accessToken,
+          phone: user.phone,
         },
       });
     } else {
