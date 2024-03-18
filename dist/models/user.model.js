@@ -33,6 +33,18 @@ const userSchema = new mongoose_1.Schema({
         type: Number,
         default: 0,
     },
+    locations: [
+        {
+            name: {
+                type: String,
+                required: true,
+            },
+            visited: {
+                type: Boolean,
+                default: false,
+            },
+        },
+    ],
 }, {
     timestamps: true,
 });

@@ -8,6 +8,12 @@ export interface IUser extends Document {
   phone: string;
   password: string;
   points: number;
+  locations: [
+    { name: "Исторически музей"; visited: false },
+    { name: "Хераклея Синтика"; visited: false },
+    { name: "Къща Ванга"; visited: false },
+    { name: "Самуилова Крепост"; visited: false }
+  ];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,6 +51,18 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
+    locations: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        visited: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
