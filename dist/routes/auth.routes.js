@@ -10,6 +10,7 @@ const router = express_1.default.Router();
 router.post("/register", user_controller_1.registerUser);
 router.post("/login", user_controller_1.loginUser);
 router.get("/users", validateTokenHandler_1.validateToken, user_controller_1.getUsers);
+router.get("/user/:id", validateTokenHandler_1.validateToken, user_controller_1.getUserById);
 router.get("/user/:id/points", validateTokenHandler_1.validateToken, user_controller_1.getUserPoints);
 router.post("/user/:id/points", validateTokenHandler_1.validateToken, user_controller_1.addPoints);
 router.post("/user/:id/points/deduct", validateTokenHandler_1.validateToken, user_controller_1.deductPoints);

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deductPoints = exports.addPoints = exports.loginUser = exports.registerUser = exports.getUserPoints = exports.getUsers = void 0;
+exports.deductPoints = exports.addPoints = exports.loginUser = exports.registerUser = exports.getUserPoints = exports.getUserById = exports.getUsers = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -35,6 +35,26 @@ exports.getUsers = (0, express_async_handler_1.default)((req, res) => __awaiter(
             message: "Users not found",
         });
         throw new Error("Users not found");
+    }
+}));
+//@desc Get user by id
+//?@route GET /api/user/:id
+//@access private
+exports.getUserById = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(req.params.id);
+    if (user) {
+        res.status(200).json({
+            success: true,
+            data: user,
+        });
+    }
+    else {
+        res.status(404);
+        res.send({
+            success: false,
+            message: "User not found",
+        });
+        throw new Error("User not found");
     }
 }));
 //@desc Get user's total points

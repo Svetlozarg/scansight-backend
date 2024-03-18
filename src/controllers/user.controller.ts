@@ -25,6 +25,27 @@ export const getUsers = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//@desc Get user by id
+//?@route GET /api/user/:id
+//@access private
+export const getUserById = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "User not found",
+    });
+    throw new Error("User not found");
+  }
+});
+
 //@desc Get user's total points
 //?@route GET /api/user/:id/points
 //@access private
