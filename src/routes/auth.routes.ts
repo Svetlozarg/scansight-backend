@@ -7,6 +7,7 @@ import {
   addPoints,
   deductPoints,
   getUserById,
+  updateUserLocation,
 } from "../controllers/user.controller";
 import { validateToken } from "../middleware/validateTokenHandler";
 
@@ -20,5 +21,6 @@ router.get("/user/:id", validateToken, getUserById);
 router.get("/user/:id/points", validateToken, getUserPoints);
 router.post("/user/:id/points", validateToken, addPoints);
 router.post("/user/:id/points/deduct", validateToken, deductPoints);
+router.put("/user/:id/location", validateToken, updateUserLocation);
 
 export default router;

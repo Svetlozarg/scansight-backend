@@ -249,3 +249,40 @@ export const deductPoints = expressAsyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+//@desc Update user location
+//!@route PUT /api/user/:id/location
+//@access private
+export const updateUserLocation = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    const location = user.locations.find(
+      (location: any) => location.name === req.body.location
+    );
+    if (location) {
+      location.visited = true;
+      await user.save();
+      res.status(200).json({
+        success: true,
+        data: {
+          location: location,
+        },
+      });
+    } else {
+      res.status(404);
+      res.send({
+        success: false,
+        message: "Location not found",
+      });
+      throw new Error("Location not found");
+    }
+  } else {
+    res.status(404);
+    res.send({
+      success: false,
+      message: "User not found",
+    });
+    throw new Error("User not found");
+  }
+});

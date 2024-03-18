@@ -14,5 +14,6 @@ router.get("/user/:id", validateTokenHandler_1.validateToken, user_controller_1.
 router.get("/user/:id/points", validateTokenHandler_1.validateToken, user_controller_1.getUserPoints);
 router.post("/user/:id/points", validateTokenHandler_1.validateToken, user_controller_1.addPoints);
 router.post("/user/:id/points/deduct", validateTokenHandler_1.validateToken, user_controller_1.deductPoints);
+router.put("/user/:id/location", validateTokenHandler_1.validateToken, user_controller_1.updateUserLocation);
 exports.default = router;
 //# sourceMappingURL=auth.routes.js.map
