@@ -1,5 +1,10 @@
 import { Document, Schema, model, models } from "mongoose";
 
+type LocationType = {
+  name: string;
+  visited: boolean;
+};
+
 export interface IUser extends Document {
   _id: string;
   firstname: string;
@@ -8,12 +13,7 @@ export interface IUser extends Document {
   phone: string;
   password: string;
   points: number;
-  locations: [
-    { name: "Исторически музей"; visited: false },
-    { name: "Хераклея Синтика"; visited: false },
-    { name: "Къща Ванга"; visited: false },
-    { name: "Самуилова Крепост"; visited: false }
-  ];
+  locations: LocationType[];
   createdAt: Date;
   updatedAt: Date;
 }

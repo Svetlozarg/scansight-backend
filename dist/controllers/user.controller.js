@@ -88,6 +88,12 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => 
         email,
         phone,
         password: hashedPassword,
+        locations: [
+            { name: "Исторически музей", visited: false },
+            { name: "Хераклея Синтика", visited: false },
+            { name: "Къща Ванга", visited: false },
+            { name: "Самуилова Крепост", visited: false },
+        ],
     });
     console.log(`User created ${user}`);
     if (user) {
@@ -99,6 +105,7 @@ exports.registerUser = (0, express_async_handler_1.default)((req, res, next) => 
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
+                location: user.locations,
             },
         });
     }
